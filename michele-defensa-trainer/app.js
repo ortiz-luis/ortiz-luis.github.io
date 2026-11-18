@@ -182,6 +182,9 @@
     if(!response.ok)throw new Error(data.msg||data.message||"No se pudo guardar la contraseña");
     sessionStore(null);
     $("password-setup").hidden=true;
+    $("password-setup-cancel").hidden=true;
+    $("new-password").value="";
+    $("confirm-new-password").value="";
     $("login-form").hidden=false;
     $("recovery-entry").hidden=false;
     $("login-password").value="";
@@ -283,6 +286,23 @@
     queryAll(".admin-only").forEach(el=>{el.hidden=state.role!=="admin"});
     showView("home");
     renderStats();renderSlides();renderResults();
+  }
+  async function openSelfServicePasswordChange(){
+    if(state.demo){notify("El cambio de contraseña no está disponible en demo.");return;}
+    if(!state.session?.access_token){notify("Debes iniciar sesión nuevamente.");return;}
+    try { if(jwtExpired(state.session))await refreshSession(); }
+    catch { logout(); $("login-error").textContent="La sesión expiró. Vuelve a entrar.";return; }
+    $("app").hidden=true;
+    $("auth").hidden=false;
+    $("login-form").hidden=true;
+    $("recovery-entry").hidden=true;
+    $("recovery-form").hidden=true;
+    $("password-setup").hidden=false;
+    $("password-setup-cancel").hidden=false;
+    $("password-setup-heading").textContent="Cambiar mi contraseña";
+    $("password-setup-message").textContent="";
+    $("new-password").value="";
+    $("confirm-new-password").value="";
   }
   function logout(){
     const bearer=state.session?.access_token;
@@ -533,6 +553,15 @@
     });
     $("demo-button").addEventListener("click",()=>startDemo("student"));
     $("demo-admin-button").addEventListener("click",()=>{startDemo("admin");showView("admin");});
+    $("change-own-password").addEventListener("click",()=>void openSelfServicePasswordChange());
+    $("password-setup-cancel").addEventListener("click",()=>{
+      $("password-setup").hidden=true;
+      $("password-setup-cancel").hidden=true;
+      $("new-password").value="";
+      $("confirm-new-password").value="";
+      $("auth").hidden=true;
+      $("app").hidden=false;
+    });
     $("logout").addEventListener("click",logout);
     queryAll("[data-view]").forEach(button=>button.addEventListener("click",()=>showView(button.dataset.view)));
     queryAll("[data-view-action]").forEach(button=>button.addEventListener("click",()=>showView(button.dataset.viewAction)));

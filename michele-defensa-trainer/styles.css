@@ -90,7 +90,8 @@ h1,h2{line-height:1.14}
 .sidebar-user .avatar{width:34px;height:34px;display:grid;place-items:center;background:#cfbdda;color:#3b2c47;border-radius:50%;font-family:"DM Serif Display",Georgia,serif;font-size:18px}
 .sidebar-user strong{display:block;font-size:11px;color:#fff}
 .sidebar-user small{display:block;font-size:9px;color:#aab5c7;margin-top:3px}
-.logout{margin-left:auto;border:0;background:none;color:#b1bdce;font-size:25px;padding:4px 8px}
+.sidebar-password{margin-left:auto;border:1px solid #ffffff35;background:transparent;border-radius:7px;color:#cad5e5;font:inherit;font-size:10px;padding:7px 8px;cursor:pointer}.sidebar-password:hover{background:#ffffff14;color:#fff}
+.logout{border:0;background:none;color:#b1bdce;font-size:25px;padding:4px 8px}
 .main{min-width:0}
 .topbar{height:86px;display:flex;justify-content:space-between;align-items:center;padding:0 clamp(24px,5vw,76px);border-bottom:1px solid #e8e7e7;background:#f7f6f2}
 .breadcrumb{font-size:10px;letter-spacing:.13em;font-weight:800;color:#999fa8}

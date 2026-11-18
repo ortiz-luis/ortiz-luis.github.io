@@ -55,6 +55,7 @@
         <label for="confirm-new-password">Confirma tu contraseña</label>
         <input id="confirm-new-password" type="password" minlength="12" required autocomplete="new-password">
         <button id="password-setup-submit" type="submit" class="button button-dark auth-submit">Guardar contraseña</button>
+        <button id="password-setup-cancel" type="button" class="auth-text-button" hidden>Cancelar y volver a la academia</button>
         <p id="password-setup-message" class="form-error" role="status"></p>
       </form>
       <div id="demo-invite" hidden><div class="demo-info">Vista previa de diseño. No contiene preguntas de la tesis, datos personales ni seguimiento real.</div><button type="button" class="button button-outline full-width" id="demo-button">Explorar como estudiante <span aria-hidden="true">↗</span></button><button type="button" class="button button-quiet full-width" id="demo-admin-button">Vista del administrador (demo) ↗</button></div>
@@ -77,7 +78,7 @@
     </nav>
     <div class="sidebar-spacer"></div>
     <div class="sidebar-tip"><span>✦ UNA IDEA PARA HOY</span><p>No hace falta una respuesta perfecta. Hace falta una respuesta que puedas sostener.</p></div>
-    <div class="sidebar-user"><div class="avatar" id="sidebar-avatar">M</div><span><strong id="sidebar-name">Michèle</strong><small id="sidebar-role">Entrenamiento privado</small></span><button id="logout" aria-label="Cerrar sesión" title="Cerrar sesión" class="logout">↪</button></div>
+    <div class="sidebar-user"><div class="avatar" id="sidebar-avatar">M</div><span><strong id="sidebar-name">Michèle</strong><small id="sidebar-role">Entrenamiento privado</small></span><button id="change-own-password" type="button" class="sidebar-password" title="Cambiar mi contraseña">Clave</button><button id="logout" aria-label="Cerrar sesión" title="Cerrar sesión" class="logout">↪</button></div>
   </aside>
 
   <main class="main">
