@@ -170,15 +170,35 @@
     const pool=state.mcqs.filter(x=>Array.isArray(x.options)&&x.options.length===4&&Number.isInteger(x.correct_index));
     const seed=Math.floor(Math.random()*2**32);
     const random=rand(seed);
-    const previousKey="academia-v2-lastquiz-"+(state.me?.id||"demo");
-    let previous=[];try{previous=JSON.parse(localStorage.getItem(previousKey)||"[]");}catch{}
+    const userId=state.me?.id||"demo";
+    const historyKey="academia-v2-quiz-history-v2-"+userId;
+    // Remember FOUR recent decks, not only the last one. Keep the legacy
+    // last-deck entry as an initial migration to avoid immediate repetitions.
+    let history=[];
+    try{
+      const raw=JSON.parse(localStorage.getItem(historyKey)||"null");
+      if(Array.isArray(raw))history=raw.filter(x=>Array.isArray(x)).slice(0,4);
+      else{
+        const old=JSON.parse(localStorage.getItem("academia-v2-lastquiz-"+userId)||"[]");
+        if(Array.isArray(old)&&old.length)history=[old];
+      }
+    }catch{}
+    const recent=new Map();
+    history.forEach((deck,age)=>deck.forEach(id=>{
+      if(!recent.has(id))recent.set(id,age);
+    }));
+    // Prioritize new questions and due errors. Penalize only recent decks,
+    // in descending order; when the bank is exhausted, older cards return.
+    const penalties=[18000,12000,6000,2500];
     const sorted=shuffle(pool,random).sort((a,b)=>{
-      const ap=scoreOrder(a)-(pool.length>=20&&previous.includes(a.id)?3000:0);
-      const bp=scoreOrder(b)-(pool.length>=20&&previous.includes(b.id)?3000:0);
-      return bp-ap;
+      const priority=q=>scoreOrder(q)-(recent.has(q.id)?penalties[recent.get(q.id)]:0);
+      return priority(b)-priority(a);
     });
     const deck=sorted.slice(0,Math.min(10,sorted.length));
-    try{localStorage.setItem(previousKey,JSON.stringify(deck.map(x=>x.id)));}catch{}
+    if(deck.length){
+      history.unshift(deck.map(x=>x.id));
+      try{localStorage.setItem(historyKey,JSON.stringify(history.slice(0,4)));}catch{}
+    }
     return {deck,seed};
   }
   function startQuiz(){
@@ -198,11 +218,15 @@
     $("quiz-feedback").hidden=true;
     const choices=$("quiz-options");choices.replaceChildren();
     const labels=["A","B","C","D"];
-    q.options.forEach((option,index)=>{
+    // Presentation-only shuffle: persist the CANONICAL answer index so
+    // previous attempts and spaced-repetition scoring remain compatible.
+    const optionSeed=(state.quiz.seed + Math.imul(state.quiz.index+1,2654435761))>>>0;
+    state.quiz.optionOrder=shuffle([0,1,2,3],rand(optionSeed));
+    state.quiz.optionOrder.forEach((canonical,index)=>{
       const button=document.createElement("button");button.type="button";
       button.innerHTML="<b>"+labels[index]+"</b><span></span>";
-      button.querySelector("span").textContent=option;
-      button.addEventListener("click",()=>chooseQuizAnswer(index));
+      button.querySelector("span").textContent=q.options[canonical];
+      button.addEventListener("click",()=>chooseQuizAnswer(canonical));
       choices.appendChild(button);
     });
     const unsure=document.createElement("button");unsure.type="button";
@@ -218,10 +242,12 @@
     if(answer===q.correct_index)state.quiz.correct++;
     all("#quiz-options button").forEach((b,index)=>{
       b.disabled=true;
-      if(index===q.correct_index)b.classList.add("correct");
-      if(index===answer&&answer!==q.correct_index)b.classList.add("incorrect");
+      const canonical=state.quiz.optionOrder[index];
+      if(canonical===q.correct_index)b.classList.add("correct");
+      if(canonical===answer&&answer!==q.correct_index)b.classList.add("incorrect");
     });
-    text("quiz-result",answer===q.correct_index?"Correcta":"La opción mejor sustentada es "+["A","B","C","D"][q.correct_index]);
+    const correctDisplayIndex=state.quiz.optionOrder.indexOf(q.correct_index);
+    text("quiz-result",answer===q.correct_index?"Correcta":"La opción mejor sustentada es "+["A","B","C","D"][correctDisplayIndex]);
     text("quiz-explanation",q.explanation);
     text("quiz-reference","Fuente: "+q.source_reference);
     $("quiz-feedback").hidden=false;
