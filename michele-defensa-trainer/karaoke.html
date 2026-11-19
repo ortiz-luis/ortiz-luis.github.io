@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#171819">
+  <title>Academia M · Defensa simulada · 11 láminas</title>
+  <link rel="stylesheet" href="./karaoke.css?v=1">
+  <script src="./config.js" defer></script>
+  <script src="./karaoke-private.js?v=1" defer></script>
+  <script src="./karaoke.js?v=1" defer></script>
+</head>
+<body>
+  <div class="private-notice" id="private-notice" role="status">
+    <div class="private-notice-card">
+      <strong>Academia M · Acceso privado</strong>
+      <p id="private-notice-message">Comprobando la sesión y cargando los medios protegidos…</p>
+      <a href="./index.html">Volver a mi academia</a>
+    </div>
+  </div>
+  <main class="meeting" id="meeting" aria-label="Simulador privado de defensa de tesis">
+    <header class="meeting-header">
+      <div class="meeting-left"><a class="back-to-academy" href="./v2.html?mode=mock" title="Volver a los cuatro modos de práctica" aria-label="Volver a la academia">←</a><span class="security-icon">◆</span>
+        <span class="meeting-name">Defensa de tesis · Magíster en Sistema Penal</span>
+      </div>
+      <span class="meeting-simulated"><span class="online"></span> SIMULACIÓN DE VIDEOLLAMADA</span>
+      <div class="header-right">
+        <button class="meeting-clock" type="button" id="meeting-clock"
+                aria-label="Cambiar diapositiva" aria-expanded="false">Academia M · Lámina 09/11</button>
+          <div class="share-hint" aria-label="Navegación entre diapositivas">
+            <button id="prev-slide" type="button" title="Lámina anterior" aria-label="Lámina anterior">‹</button>
+            <label class="sr-only" for="slide-picker">Elegir lámina</label>
+            <select id="slide-picker" aria-label="Elegir lámina"></select>
+            <button id="next-slide" type="button" title="Lámina siguiente" aria-label="Lámina siguiente">›</button>
+          </div>
+      </div>
+    </header>
+
+    <div class="meeting-content" id="meeting-content">
+      <section class="stage-column" aria-label="Exposición de tesis">
+
+
+        <section class="stage" aria-label="Diapositiva con puntero y teleprónter">
+          <div id="slide-frame" class="slide-frame">
+            <img id="slide-image" alt="Lámina protegida V6" decoding="async">
+            <button id="fullscreen-stage" type="button" class="stage-fullscreen"
+                    title="Pantalla completa (F)" aria-label="Pantalla completa">
+              ⛶ <span>Ampliar</span>
+            </button>
+            <div id="laser" class="laser" aria-hidden="true"></div>
+            <div id="laser-tag" class="laser-tag" aria-hidden="true"></div>
+            <div id="captions" class="captions">
+            <div class="caption-status">
+              <span class="caption-icon">CC</span>
+              <span id="cue-count">LÁMINA 09</span>
+              <span class="caption-divider">·</span>
+              <span id="pointer-status">Puntero preparado</span>
+            </div>
+            <div id="current-line" class="current-line" aria-live="off">Preparando el guion…</div>
+            <div id="next-line" class="next-line" aria-hidden="true">—</div>
+              <span class="caption-grip grip-nw" data-resize="nw" title="Escalar desde esquina superior izquierda">↖↘</span>
+              <span class="caption-grip grip-n" data-resize="n" title="Cambiar solo la altura desde arriba">↕</span>
+              <span class="caption-grip grip-ne" data-resize="ne" title="Escalar desde esquina superior derecha">↗↙</span>
+              <span class="caption-grip grip-e" data-resize="e" title="Cambiar solo el ancho desde la derecha">↔</span>
+              <span class="caption-grip grip-se" data-resize="se" title="Escalar desde esquina inferior derecha">↖↘</span>
+              <span class="caption-grip grip-s" data-resize="s" title="Cambiar solo la altura desde abajo">↕</span>
+              <span class="caption-grip grip-sw" data-resize="sw" title="Escalar desde esquina inferior izquierda">↗↙</span>
+              <span class="caption-grip grip-w" data-resize="w" title="Cambiar solo el ancho desde la izquierda">↔</span>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <aside class="jury-sidebar" id="jury-sidebar" aria-label="Comisión simulada">
+        <section id="participants" class="participants" aria-label="Participantes de la simulación">
+          <article class="participant" aria-label="Gustavo Balmaceda">
+            <img class="portrait" data-private-path="jurors/gustavo-balmaceda.jpg" alt="" loading="eager">
+            <div class="participant-overlay">Gustavo Balmaceda</div>
+          </article>
+          <article class="participant" aria-label="Sebastián Valenzuela">
+            <img class="portrait" data-private-path="jurors/sebastian-valenzuela.jpg" alt="" loading="eager">
+            <div class="participant-overlay">Sebastián Valenzuela</div>
+          </article>
+          <article class="participant" aria-label="Silvio Cuneo">
+            <img class="portrait" data-private-path="jurors/silvio-cuneo.jpg" alt="" loading="eager">
+            <div class="participant-overlay">Silvio Cuneo</div>
+          </article>
+          <article class="participant" aria-label="Federico Szczaranski">
+            <img class="portrait" data-private-path="jurors/federico-szczaranski.jpg" alt="" loading="eager">
+            <div class="participant-overlay">Federico Szczaranski</div>
+          </article>
+          <article class="participant self">
+            <div class="self-portrait"><strong>M</strong><span>TU CÁMARA ESTÁ APAGADA</span></div>
+            <div class="participant-overlay"><span class="mic-muted">⌁</span> Michele · Presentadora</div>
+          </article>
+        </section>
+
+      </aside>
+    </div>
+
+    <video id="narration" playsinline preload="auto" class="audio-source"
+           aria-label="Narración de referencia V6">
+      <!-- MP4 se entrega como Blob solo tras validar la sesión Supabase -->
+    </video>
+
+    <footer class="zoom-toolbar" aria-label="Controles de ensayo">
+      <div class="toolbar-left">
+        <div class="toolbar-status"><span class="tool-icon mic-off">🎙̸</span><span>Micrófono apagado</span></div>
+        <div class="toolbar-status"><span class="tool-icon">▣</span><span>Cámara apagada</span></div>
+        <button id="toggle-participants" class="toolbar-button" type="button" aria-pressed="true">
+          <span class="tool-icon">♧</span><span>Jurados</span>
+        </button>
+      </div>
+      <div class="toolbar-center">
+        <div class="toolbar-row">
+          <div class="mode-selector" role="group" aria-label="Modalidad">
+            <button id="mode-listen" class="mode active" aria-pressed="true">◉ Escuchar</button>
+            <button id="mode-practice" class="mode" aria-pressed="false">◎ Ensayar sola</button>
+          </div>
+          <div class="play-actions">
+            <button id="restart" class="control-compact" aria-label="Reiniciar lámina">↺</button>
+            <button id="back" class="control-compact" aria-label="Retroceder cinco segundos">↶5s</button>
+            <button id="play" class="control-main" disabled aria-label="Reproducir">▶ <span>Reproducir</span></button>
+            <span class="timer"><span id="current-time">00:00</span>/<span id="total-time">01:34</span></span>
+          </div>
+          <details class="settings"><summary>⚙ Ajustes</summary>
+            <div class="settings-content">
+              <label for="rate">Velocidad <select id="rate"><option value="0.8">0,80×</option><option value="0.9">0,90×</option><option value="1" selected>1,00×</option><option value="1.1">1,10×</option><option value="1.2">1,20×</option></select></label>
+              <label class="check"><input type="checkbox" id="text-visible" checked> Letra</label>
+              <label class="check"><input type="checkbox" id="laser-visible" checked> Láser</label>
+              <label class="check"><input type="checkbox" id="auto-next" checked> Continuar entre láminas</label>
+              <button id="prompter-reset" type="button" class="minor" title="Recuperar la posición y el tamaño del teleprónter">Restablecer teleprónter</button>
+              <button id="calibrate" type="button" class="minor">Calibrar láser</button>
+              <button id="export" type="button" class="minor">Exportar puntos</button>
+            </div>
+          </details>
+        </div>
+        <div class="toolbar-progress">
+          <input type="range" id="seek" min="0" max="94.53" step="0.05" value="0" disabled aria-label="Avance del audio">
+          <div class="chapter-links">
+            <button data-jump="534.311">Ejecución</button>
+            <button data-jump="544.641">Homicidio</button>
+            <button data-jump="560.641">Dolo</button>
+            <button data-jump="601.096">Conclusión</button>
+          </div>
+        </div>
+      </div>
+      <div class="toolbar-right">
+        <button id="fullscreen-button" class="fullscreen-button" type="button" aria-label="Pantalla completa">⛶ <span>Pantalla completa</span></button>
+        <button id="end-meeting" class="end-button" type="button">Terminar</button>
+      </div>
+    </footer>
+    <div class="sr-only" role="status" id="message">Preparando los materiales privados…</div>
+  </main>
+</body>
+</html>

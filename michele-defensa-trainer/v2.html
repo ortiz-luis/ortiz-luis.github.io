@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#162337">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Entrenamiento privado de defensa de tesis; acceso autorizado.">
+<title>Academia M · Entrenamiento avanzado</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./v2.css?v=1">
+<script src="./config.js" defer></script>
+<script src="./v2.js?v=1" defer></script>
+</head>
+<body>
+<div id="loading" class="loading" role="status">Preparando tu academia privada…</div>
+<div id="error-screen" class="error-screen" hidden>
+  <h1>No se pudo abrir el entrenamiento avanzado</h1>
+  <p id="error-text">Comprueba que tienes permiso para acceder.</p>
+  <a href="./index.html" class="button">Volver al inicio de sesión</a>
+</div>
+<div id="studio" class="studio" hidden>
+  <aside class="sidebar">
+    <a href="./index.html" class="brand" aria-label="Volver a Academia M"><span class="brand-monogram">M<span>.</span></span><span><strong>academia.</strong><small>DEFENSA DE TESIS</small></span></a>
+    <div class="nav-small">ENTRENAMIENTO AVANZADO</div>
+    <nav class="main-nav" aria-label="Modalidades">
+      <button data-mode="quiz" class="selected"><span>✧</span><span>Estudiar</span></button>
+      <button data-mode="slides"><span>▣</span><span>Por lámina</span></button>
+      <button data-mode="tribunal"><span>⚖</span><span>Tribunal</span></button>
+      <button data-mode="mock"><span>◷</span><span>Simulacro</span></button>
+      <a id="karaoke-link" href="./karaoke.html"><span>◎</span><span>Ensayo guiado</span></a>
+      <button data-mode="progress"><span>▥</span><span>Mi progreso</span></button>
+    </nav>
+    <div class="sidebar-bottom"><p>Responde primero, contrasta después.</p><small>Sin grabaciones, transcripciones ni evaluaciones automáticas.</small></div>
+  </aside>
+  <main class="workspace">
+    <header class="topbar"><span>ACADEMIA M <b>/</b> <strong id="mode-breadcrumb">ESTUDIAR</strong></span><div><span id="identity" aria-label="Cuenta autorizada"></span><a href="./index.html">Mi academia</a></div></header>
+    <div id="alert" class="alert" role="status" aria-live="polite" hidden></div>
+    <section id="mode-quiz" class="mode-pane" aria-labelledby="quiz-title">
+      <div class="heading"><span class="eyebrow">01 · RAZONAMIENTO Y REPASO</span><h1 id="quiz-title">Estudiar <em>de verdad.</em></h1><p>Diez preguntas de alternativas. Primero responde; después compara el fundamento. Las preguntas sin revisión académica no se ofrecen.</p></div>
+      <div class="main-card">
+        <div class="card-kicker"><span id="quiz-number">SESIÓN SIN COMENZAR</span><span id="quiz-coverage"></span></div>
+        <div id="quiz-idle"><h2>No basta con reconocer una frase.</h2><p>Escoge la respuesta mejor sustentada y reconoce cuándo no sabes.</p><button id="quiz-start" class="button primary">Iniciar 10 preguntas</button></div>
+        <div id="quiz-live" hidden><div class="quiz-context" id="quiz-area"></div><h2 id="quiz-question"></h2><div id="quiz-options" class="options" role="group" aria-label="Alternativas de respuesta"></div><div id="quiz-feedback" class="feedback" hidden><h3 id="quiz-result"></h3><p id="quiz-explanation"></p><small id="quiz-reference"></small><label>¿Cuánta confianza tenías al responder? <select id="quiz-confidence"><option value="0">0 · Ninguna</option><option value="1">1 · Baja</option><option value="2" selected>2 · Intermedia</option><option value="3">3 · Alta</option><option value="4">4 · Podría defenderla</option></select></label><button id="quiz-next" class="button primary">Guardar y continuar</button></div></div>
+        <div id="quiz-finish" hidden><h2>Sesión terminada</h2><p id="quiz-summary"></p><button id="quiz-restart" class="button primary">Otra sesión diferente</button></div>
+      </div>
+      <div class="small-note" id="quiz-policy">Repetición inteligente: primero nuevas, después los errores e inseguridades. Sin aciertos aleatorios convertidos en «dominio».</div>
+    </section>
+
+    <section id="mode-slides" class="mode-pane" aria-labelledby="slides-title" hidden>
+      <div class="heading"><span class="eyebrow">02 · PRESENTACIÓN</span><h1 id="slides-title">Tus <em>11 láminas.</em></h1><p>Diapositiva auténtica, accesible solo con tu cuenta. Ensaya sin leer; después descubre la pauta.</p></div>
+      <div class="slide-layout">
+        <div class="slide-panel">
+          <div class="slide-nav"><button id="slide-prev" aria-label="Lámina anterior">‹</button><select id="slide-select" aria-label="Elegir lámina"></select><button id="slide-next" aria-label="Lámina siguiente">›</button><button id="slide-fullscreen" title="Pantalla completa">⛶</button></div>
+          <div id="slide-stage" class="slide-stage"><p id="slide-loading" role="status">Cargando imagen privada…</p><img id="slide-image" alt="Lámina de presentación" hidden></div>
+          <div class="slide-controls"><span id="slide-clock">00:00</span><button id="slide-timer">Iniciar ensayo</button><button id="slide-stop">Detener</button><button id="slide-reveal">Mostrar pistas</button></div>
+        </div>
+        <aside class="slide-aside"><span class="eyebrow">LÁMINA <span id="slide-kicker">01</span></span><h2 id="slide-title">Preparando…</h2><div id="slide-hints" hidden><h3>Idea que debes explicar</h3><p id="slide-explainer"></p><h3>Evita este error</h3><p id="slide-pitfall"></p><small id="slide-reference"></small></div><div class="rating"><h3>¿Cómo te fue?</h3><button data-slide-score="4">La domino</button><button data-slide-score="2">Debo repasar</button><button data-slide-score="0">Me costó</button></div><p id="slide-status" class="subtle"></p></aside>
+      </div>
+    </section>
+
+    <section id="mode-tribunal" class="mode-pane" aria-labelledby="tribunal-title" hidden>
+      <div class="heading"><span class="eyebrow">03 · PENSAMIENTO ADVERSARIAL</span><h1 id="tribunal-title">Frente al <em>tribunal.</em></h1><p>Examinadores ficticios y cadenas de 2–3 turnos preparadas de antemano. No simula escuchar ni evaluar tus respuestas.</p></div>
+      <div class="mode-choice" role="group" aria-label="Elegir enfoque de examinador"><button data-examiner="any" class="selected">Sorpréndeme</button><button data-examiner="dogmatica">Dogmática</button><button data-examiner="jurisprudencia">Jurisprudencia</button><button data-examiner="metodologia">Metodología</button></div>
+      <div class="main-card">
+        <div class="card-kicker"><span id="tribunal-label">TRIBUNAL PREPARADO</span><span id="tribunal-clock">00:00</span></div>
+        <div id="tribunal-idle"><h2>Una objeción cambia el argumento.</h2><p>Escucha el turno, responde en voz alta y solo después muestra la estrategia.</p><button id="tribunal-start" class="button primary">Comenzar interrogatorio</button></div>
+        <div id="tribunal-live" hidden><span class="eyebrow" id="tribunal-turn">TURNO 1 DE 3</span><h2 id="tribunal-question"></h2><p id="tribunal-context"></p><div id="tribunal-help" class="feedback" hidden><strong>Orientación, no respuesta para memorizar</strong><p id="tribunal-strategy"></p><small id="tribunal-reference"></small></div><div class="actions"><button id="tribunal-unsure">No sé / necesito orientación</button><button id="tribunal-next" class="button primary">Ver repregunta</button></div><div id="tribunal-branches" class="actions" hidden><button data-tribunal-branch="incomplete">Mi respuesta fue incompleta</button><button data-tribunal-branch="sufficient">Pude sostener la respuesta</button></div></div>
+        <div id="tribunal-finish" hidden><h2>Interrogatorio terminado</h2><p>Registra tu propia valoración. No hay una calificación automática de contenido.</p><div id="tribunal-scores" class="score-buttons"><button data-tribunal-score="0">0</button><button data-tribunal-score="1">1</button><button data-tribunal-score="2">2</button><button data-tribunal-score="3">3</button><button data-tribunal-score="4">4</button></div></div>
+      </div>
+    </section>
+
+    <section id="mode-mock" class="mode-pane" aria-labelledby="mock-title" hidden>
+      <div class="heading"><span class="eyebrow">04 · DEFENSA INTEGRAL</span><h1 id="mock-title">Simular <em>mi defensa.</em></h1><p>Presentación de hasta 15 minutos, seguida de tres interrogatorios. El reloj mide tiempo real, pero el límite debe confirmarse con la pauta oficial.</p></div>
+      <div class="main-card">
+        <div class="card-kicker"><span id="mock-phase">PREPARADA PARA COMENZAR</span><strong id="mock-clock">15:00</strong></div>
+        <div id="mock-idle"><h2>Ahora tú llevas la presentación.</h2><p>No habrá teleprónter ni pautas durante la exposición.</p><button id="mock-start" class="button primary">Comenzar simulacro</button><a id="mock-guided-link" class="button" href="./karaoke.html">Practicar con narración, láser y jurados</a></div>
+        <div id="mock-present" hidden><div class="slide-nav"><button id="mock-prev">‹</button><span id="mock-slide-number">Lámina 1 de 11</span><button id="mock-next">Siguiente lámina ›</button><button id="mock-fullscreen" title="Pantalla completa">⛶</button></div><div class="slide-stage mock-stage"><p id="mock-image-loading">Cargando diapositiva protegida…</p><img id="mock-image" hidden alt="Lámina actual del simulacro"></div><div class="actions"><button id="mock-to-tribunal" class="button primary">Terminar exposición y pasar al tribunal</button></div></div>
+        <div id="mock-questions" hidden><span class="eyebrow" id="mock-turn">TRIBUNAL</span><h2 id="mock-question"></h2><div class="actions"><button id="mock-unsure">No sé / necesito orientación</button><button id="mock-next-turn" class="button primary">Siguiente turno</button></div><div id="mock-branches" class="actions" hidden><button data-mock-branch="incomplete">Mi respuesta fue incompleta</button><button data-mock-branch="sufficient">Pude sostener la respuesta</button></div><p id="mock-guidance" hidden></p><div id="mock-score" class="score-buttons" hidden><p>Autoevaluación de esta cadena</p><button data-mock-score="0">0</button><button data-mock-score="1">1</button><button data-mock-score="2">2</button><button data-mock-score="3">3</button><button data-mock-score="4">4</button></div></div>
+        <div id="mock-finish" hidden><h2>Informe del ensayo</h2><div id="mock-report"></div><button id="mock-repeat" class="button primary">Preparar otro simulacro</button></div>
+      </div>
+    </section>
+
+    <section id="mode-progress" class="mode-pane" aria-labelledby="progress-title" hidden>
+      <div class="heading"><span class="eyebrow">05 · AVANCES PERSONALES</span>
+        <h1 id="progress-title">Mi <em>progreso.</em></h1>
+        <p>Seguimiento del estudio y la práctica. Son autoevaluaciones, nunca notas oficiales de un tribunal.</p></div>
+      <div class="progress-overview">
+        <article class="main-card"><span class="eyebrow">ALTERNATIVAS</span><h2 id="progress-mcq">0</h2><p>Preguntas distintas respondidas.</p></article>
+        <article class="main-card"><span class="eyebrow">POR LÁMINA</span><h2 id="progress-slides">0</h2><p>Diapositivas practicadas y evaluadas.</p></article>
+        <article class="main-card"><span class="eyebrow">TRIBUNAL</span><h2 id="progress-tribunal">0</h2><p>Interrogatorios registrados.</p></article>
+        <article class="main-card"><span class="eyebrow">SIMULACRO</span><h2 id="progress-mocks">0</h2><p>Ensayos integrales completados.</p></article>
+      </div>
+      <div class="main-card progress-detail"><h2>Últimos siete días</h2>
+        <div id="progress-days" class="progress-days" aria-label="Actividad de los últimos siete días"></div>
+        <h2 id="progress-recommendation">Tu próximo paso</h2>
+        <p id="progress-next"></p>
+      </div>
+    </section>
+
+    <div id="admin-tools" class="admin-tools" hidden><details><summary>Administración · Cargar medios privados</summary><p>Solo el administrador puede cargar los 11 PNG originales, el MP4, el guion de tiempos JSON y las cuatro fotografías JPEG originales de la comisión. Todos van al bucket privado y nunca a GitHub Pages.</p><input type="file" id="admin-files" accept=".png,.webp,.jpg,.jpeg,.mp4,.json" multiple><button id="admin-upload" class="button">Subir archivos protegidos</button><p id="upload-status" role="status"></p></details></div>
+  </main>
+</div>
+</body>
+</html>

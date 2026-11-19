@@ -48,7 +48,7 @@
   ];
   const state = {
     demo:false,user:null,role:null,name:"",session:null,
-    questions:[],slides:[],attempts:[],events:[],profiles:[],
+    questions:[],slides:[],attempts:[],v2Attempts:[],events:[],profiles:[],
     view:"home",mode:"study",selectedSlide:1,current:null,missionMode:false,activeMission:[],
     lastQuestion:null,questionNumber:0,
     seconds:900,timerRunning:false,timerDeadline:null,timerHandle:null,
@@ -245,6 +245,13 @@
         api("profiles?select=user_id,display_name&order=display_name.asc")
       ]);
       state.events=events;state.profiles=profiles;
+      // Merge minimal progress metadata; no answers, voice or text.
+      const extra=await Promise.all(["mcq_attempts","slide_rehearsals","tribunal_attempts","mock_runs"].map(
+        name=>api(name+"?select=user_id,created_at&order=created_at.desc&limit=500").catch(e=>{
+          console.warn("Seguimiento parcial de "+name,e.message);return [];
+        })
+      ));
+      state.v2Attempts=extra.flat();
     }
     await recordEvent(restored?"app_open":"login");
     openWorkspace();
@@ -278,6 +285,13 @@
     // El distintivo VISTA DEMO señala el estado sin cubrir el contenido inicial.
   }
   function openWorkspace(){
+    const advanced = $("v2-link");
+    if (advanced) advanced.href = state.demo ? "./v2.html?demo=1" : "./v2.html";
+    const karaokeLink=$("karaoke-v1-link");
+    if(karaokeLink){
+      karaokeLink.href=state.demo?"./v2.html?demo=1":"./karaoke.html";
+      karaokeLink.title=state.demo?"La narración privada requiere iniciar sesión":"Rehearsal con narración, puntero y teleprónter";
+    }
     $("auth").hidden=true;$("app").hidden=false;
     $("demo-badge").hidden=!state.demo;
     $("sidebar-name").textContent=state.name;
@@ -310,11 +324,14 @@
       void fetch(baseUrl+"/auth/v1/logout",{method:"POST",headers:{apikey:key,Authorization:"Bearer "+bearer}}).catch(()=>{});
     }
     sessionStore(null);resetTimer();
-    Object.assign(state,{demo:false,user:null,role:null,name:"",questions:[],slides:[],attempts:[],events:[],profiles:[],current:null});
+    Object.assign(state,{demo:false,user:null,role:null,name:"",questions:[],slides:[],attempts:[],v2Attempts:[],events:[],profiles:[],current:null});
     $("app").hidden=true;$("auth").hidden=false;$("login-password").value="";$("login-error").textContent="";
     showView("home");
   }
   function showView(view){
+    if(!state.demo && (view==="practice"||view==="slides"||view==="results")){
+      location.assign("./v2.html?mode="+(view==="slides"?"slides":view==="results"?"progress":"quiz"));return;
+    }
     if(view==="admin"&&state.role!=="admin")return;
     state.view=view;
     queryAll(".page").forEach(el=>el.classList.toggle("active",el.id==="view-"+view));
@@ -342,6 +359,7 @@
     $("mission-start").textContent=m.done>=m.ids.length?"Repasar misión ↗":"Continuar misión ↗";
   }
   function startMission(){
+    if(!state.demo){location.assign("./v2.html?mode=quiz");return;}
     setMode("study");
     const m=missionInfo();
     state.activeMission=m.ids;
@@ -359,6 +377,10 @@
   }
   function setMode(mode){
     if(!["study","slide","tribunal","mock"].includes(mode))return;
+    if(!state.demo){
+      const target={study:"quiz",slide:"slides",tribunal:"tribunal",mock:"mock"}[mode];
+      location.assign("./v2.html?mode="+target);return;
+    }
     state.mode=mode;state.missionMode=false;state.activeMission=[];
     queryAll("[data-practice-mode]").forEach(el=>el.classList.toggle("active",el.dataset.practiceMode===mode));
     state.current=null;state.questionNumber=0;
@@ -477,7 +499,7 @@
   }
   function renderAdmin(){
     if(state.role!=="admin")return;
-    const profiles=state.profiles,events=state.events,attempts=state.attempts;
+    const profiles=state.profiles,events=state.events,attempts=[...state.attempts,...state.v2Attempts];
     // MVP: a single administrator (the current account) and one student.
     // The student table must never mistake the admin's own login for a student's.
     const students=profiles.filter(p=>p.user_id!==state.user?.id);
