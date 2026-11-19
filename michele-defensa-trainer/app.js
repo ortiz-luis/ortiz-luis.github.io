@@ -265,7 +265,7 @@
   }
   function startDemo(role="student"){
     state.demo=true;state.user={id:"demo",email:"demostracion@academia.invalid"};
-    state.role=role;state.name=role==="admin"?"Luis · demo":"Michèle · demo";
+    state.role=role;state.name=role==="admin"?"Luis · demo":"Michele · demo";
     state.questions=DEMO_QUESTIONS;state.slides=DEMO_SLIDES;
     state.attempts=[];state.events=[];state.profiles=[];
     if(role==="admin"){
