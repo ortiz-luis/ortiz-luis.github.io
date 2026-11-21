@@ -9,7 +9,9 @@ const ui = {
   rate: $("rate"), textVisible: $("text-visible"), laserVisible: $("laser-visible"),
   listen: $("mode-listen"), practice: $("mode-practice"), msg: $("message"),
   pointerStatus: $("pointer-status"), calibrate: $("calibrate"),
-  export: $("export"), fullscreen: $("fullscreen-button"),
+  export: $("export"), import: $("import-anchor"), anchorFile: $("anchor-file"),
+  undoAnchor: $("undo-anchor"), resetAnchors: $("reset-anchors"),
+  anchorCount: $("anchor-count"), fullscreen: $("fullscreen-button"),
   picker: $("slide-picker"), prevSlide: $("prev-slide"), nextSlide: $("next-slide"),
   autoNext: $("auto-next"), image: $("slide-image"),
   chapterLinks: document.querySelector(".chapter-links"),
@@ -392,12 +394,88 @@ function safeStoredAnchors() {
   }
 }
 
+function refreshAnchorControls() {
+  const count = timeline ? safeStoredAnchors().length : 0;
+  ui.anchorCount.textContent = count + (count === 1 ? " punto propio" : " puntos propios") +
+    (timeline ? " · Lámina " + String(timeline.slide).padStart(2, "0") : "");
+  ui.import.disabled = !timeline;
+  ui.export.disabled = !timeline;
+  ui.undoAnchor.disabled = !count;
+  ui.resetAnchors.disabled = !count;
+}
+
+function saveAnchors(updated) {
+  if (!timeline) return false;
+  try {
+    if (updated.length) localStorage.setItem(anchorStorageKey(), JSON.stringify(updated));
+    else localStorage.removeItem(anchorStorageKey());
+  } catch (_) {
+    setMessage("No se pudo guardar la calibración en este navegador.", true);
+    return false;
+  }
+  anchors = timeline.anchors.concat(updated).sort((a, b) => a.at - b.at);
+  refreshAnchorControls();
+  laserForTime(currentAbsolute());
+  return true;
+}
+
 function storeAnchor(anchor) {
   const previous = safeStoredAnchors();
   const updated = previous.filter(a => Math.abs(a.at - anchor.at) > .5);
   updated.push(anchor);
-  localStorage.setItem(anchorStorageKey(), JSON.stringify(updated));
-  anchors = timeline.anchors.concat(updated).sort((a, b) => a.at - b.at);
+  return saveAnchors(updated);
+}
+
+function undoLastAnchor() {
+  const saved = safeStoredAnchors();
+  if (!saved.length) return;
+  if (saveAnchors(saved.slice(0, -1))) setMessage("Último ajuste eliminado de esta lámina.");
+}
+
+function resetCustomAnchors() {
+  if (!timeline || !safeStoredAnchors().length) return;
+  if (!window.confirm("¿Restablecer los puntos originales de esta lámina? Se borrarán sus ajustes locales.")) return;
+  if (saveAnchors([])) setMessage("Restaurados los puntos originales de esta lámina.");
+}
+
+async function importCustomAnchors(event) {
+  const file = event.target.files?.[0];
+  event.target.value = "";
+  if (!file || !timeline) return;
+  if (file.size > 200000) {
+    setMessage("El archivo de puntos excede el tamaño permitido.", true); return;
+  }
+  const currentSlide = timeline.slide;
+  try {
+    const payload = JSON.parse(await file.text());
+    if (!payload || payload.source !== "academia-karaoke" ||
+        payload.slide !== currentSlide || !Array.isArray(payload.overrides) ||
+        payload.overrides.length > 200) {
+      throw new Error("Selecciona una exportación de esta misma lámina (máximo 200 puntos).");
+    }
+    const saved = payload.overrides;
+    if (saved.some(a => !a || !Number.isFinite(a.at) ||
+        !Number.isFinite(a.x) || !Number.isFinite(a.y) ||
+        a.at < timeline.start || a.at >= timeline.end ||
+        a.x < 0 || a.x > 1 || a.y < 0 || a.y > 1)) {
+      throw new Error("El archivo contiene tiempos o coordenadas fuera de la lámina.");
+    }
+    if (currentSlide !== timeline.slide) {
+      throw new Error("Cambiaste de lámina durante la importación. Inténtalo de nuevo.");
+    }
+    const normalized = saved.map(a => ({
+      at: Math.round(a.at * 1000) / 1000,
+      x: Math.round(a.x * 10000) / 10000,
+      y: Math.round(a.y * 10000) / 10000,
+      label: "Punto ajustado"
+    }));
+    if (saveAnchors(normalized)) setMessage(
+      "Importados " + normalized.length + " puntos de la lámina " + currentSlide +
+      ". Solo se guardan en este navegador."
+    );
+  } catch (e) {
+    setMessage("No se importaron puntos: " + e.message, true);
+  }
 }
 
 function onSlideClick(event) {
@@ -413,12 +491,13 @@ function onSlideClick(event) {
     y: Math.round(y * 10000) / 10000,
     label: "Punto ajustado"
   };
-  storeAnchor(anchor);
+  if (!storeAnchor(anchor)) return;
   setPointerPosition(anchor.x, anchor.y, anchor.label);
   setMessage("Punto del láser guardado localmente para el segundo " + clock(anchor.at - timeline.start) + ".");
 }
 
 function exportAnchors() {
+  if (!timeline) return;
   const payload = JSON.stringify({
     source: "academia-karaoke",
     slide: timeline.slide,
@@ -444,6 +523,7 @@ function activateSlide(number, {seek = true} = {}) {
   }
   timeline = selected;
   anchors = selected.anchors.concat(safeStoredAnchors()).sort((a,b) => a.at-b.at);
+  refreshAnchorControls();
   // The original filename in the PRIVATE timings JSON is never served from Pages.
   // Reject stale image requests if the user changes slides while downloading.
   const imageFor = selected.slide;
@@ -589,6 +669,11 @@ ui.calibrate.addEventListener("click", () => {
 });
 ui.frame.addEventListener("click", onSlideClick);
 ui.export.addEventListener("click", exportAnchors);
+ui.import.addEventListener("click", () => ui.anchorFile.click());
+ui.anchorFile.addEventListener("change", (event) => void importCustomAnchors(event));
+ui.undoAnchor.addEventListener("click", undoLastAnchor);
+ui.resetAnchors.addEventListener("click", resetCustomAnchors);
+refreshAnchorControls();
 async function toggleFullscreen() {
   try {
     if (!document.fullscreenElement) await document.querySelector(".meeting").requestFullscreen();
