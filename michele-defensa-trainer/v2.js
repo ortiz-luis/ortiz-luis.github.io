@@ -166,6 +166,10 @@
     const due=(wrong||last.confidence<3)?days>=1:days>=(last.confidence===4?14:7);
     return (due?5000:0)+(wrong?2000:0)+(last.confidence<=1?1500:0)+Math.min(100,days);
   }
+  function shuffleInPlace(items,random){
+    for(let i=items.length-1;i>0;i--){const j=Math.floor(random()*(i+1));[items[i],items[j]]=[items[j],items[i]];}
+    return items;
+  }
   function chooseQuizDeck(){
     const pool=state.mcqs.filter(x=>Array.isArray(x.options)&&x.options.length===4&&Number.isInteger(x.correct_index));
     const seed=Math.floor(Math.random()*2**32);
@@ -194,7 +198,30 @@
       const priority=q=>scoreOrder(q)-(recent.has(q.id)?penalties[recent.get(q.id)]:0);
       return priority(b)-priority(a);
     });
-    const deck=sorted.slice(0,Math.min(10,sorted.length));
+    // A useful 10-question session mixes doctrinal source items with applied
+    // hypotheticals. Do not serve two variants of the same hypothetical in
+    // one session (each fictional scene has six distinct OP exercises).
+    const deck=[];
+    const pickedIds=new Set();
+    const sceneIds=new Set();
+    const add=(item)=>{
+      if(pickedIds.has(item.id))return false;
+      const id=Number(item.id.slice(1));
+      if(id>60){
+        const scene=Math.floor((id-61)/6);
+        if(sceneIds.has(scene))return false;
+        sceneIds.add(scene);
+      }
+      pickedIds.add(item.id);deck.push(item);return true;
+    };
+    const doctrinal=sorted.filter(q=>Number(q.id.slice(1))<=60);
+    const applied=sorted.filter(q=>Number(q.id.slice(1))>60);
+    for(const q of doctrinal){if(deck.length>=5)break;add(q);}
+    let caseCount=0;
+    for(const q of applied){if(caseCount>=5)break;if(add(q))caseCount++;}
+    // If one pool is smaller, fill from the other while keeping scene variety.
+    for(const q of sorted){if(deck.length>=10)break;add(q);}
+    shuffleInPlace(deck,random);
     if(deck.length){
       history.unshift(deck.map(x=>x.id));
       try{localStorage.setItem(historyKey,JSON.stringify(history.slice(0,4)));}catch{}
