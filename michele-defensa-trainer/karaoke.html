@@ -131,7 +131,12 @@
               <label class="check"><input type="checkbox" id="auto-next" checked> Continuar entre láminas</label>
               <button id="prompter-reset" type="button" class="minor" title="Recuperar la posición y el tamaño del teleprónter">Restablecer teleprónter</button>
               <button id="calibrate" type="button" class="minor">Calibrar láser</button>
-              <button id="export" type="button" class="minor">Exportar puntos</button>
+              <span id="anchor-count" role="status" aria-live="polite">0 puntos propios</span>
+              <button id="undo-anchor" type="button" class="minor" disabled>Deshacer último punto</button>
+              <button id="reset-anchors" type="button" class="minor" disabled>Restaurar láser original</button>
+              <button id="export" type="button" class="minor" disabled>Exportar puntos</button>
+              <button id="import-anchor" type="button" class="minor" disabled>Importar puntos</button>
+              <input id="anchor-file" type="file" accept=".json,application/json" hidden aria-label="Archivo de calibración de la lámina">
             </div>
           </details>
         </div>
