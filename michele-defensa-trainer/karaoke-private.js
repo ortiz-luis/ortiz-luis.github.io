@@ -94,6 +94,15 @@
     const response=await authorizedFetch("/storage/v1/object/authenticated/"+BUCKET+"/"+path);
     return response.json();
   }
+  // Calibrated pointers are editorial metadata, never part of the static site.
+  // RLS on slide_guides only returns these records to authorized academy members.
+  async function laserAnchors(){
+    if(!identity)throw new Error("Debes identificarte antes de cargar el puntero.");
+    const response=await authorizedFetch("/rest/v1/slide_guides?select=slide,laser_anchors&order=slide.asc");
+    const rows=await response.json();
+    if(!Array.isArray(rows))throw new Error("No se pudieron leer las posiciones privadas del láser.");
+    return rows;
+  }
   async function media(path){
     if(!identity)throw new Error("Debes identificarte antes de cargar las imágenes.");
     if(!safePaths.test(path)||path.endsWith(".json"))throw new Error("Medio no autorizado.");
@@ -130,5 +139,5 @@
     }
     cache.clear();
   });
-  window.KaraokePrivate=Object.freeze({authorize,json,media,loadJury,ready,fail:error});
+  window.KaraokePrivate=Object.freeze({authorize,json,laserAnchors,media,loadJury,ready,fail:error});
 })();
