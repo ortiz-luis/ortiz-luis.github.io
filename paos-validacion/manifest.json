@@ -1,0 +1,21 @@
+{
+  "format": "paos-public-export/1",
+  "title": "Fictional laboratory study 1",
+  "slug": "fictional-laboratory-study-1",
+  "access_mode": "public-no-login",
+  "contents_visible_without_password": true,
+  "owner_acknowledged_public_rights": true,
+  "questions_expert_reviewed": false,
+  "public_files_sha256": {
+    ".nojekyll": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "app.js": "723669bd00c469f6fdee5ed98f556967fa0fdd2dcbcfd04372bfa529486837a8",
+    "config.js": "09cb90839551c64d8efbc5e4a9233d9805ff9970b8a1a8e5ee86a3ab4d948543",
+    "content.js": "de0e917a4c5b454059c3c2b45f48c4204a6dd028790e77105bc778487bd2162b",
+    "index.html": "58acd3058042586f2bf693f7489ac1eeb2c848ac3a52549b02da08848d8ff51a",
+    "style.css": "4b7b063dbbf1905232d109fe1756ac4b999043d2157638a0934a9a9cd847ef5c",
+    "slides/slide-01.png": "c44fe440002f0356da925fcc420cd0100f80c635ec01962c02ec63d50d1f7c94",
+    "slides/slide-02.png": "5828576bddaa481e9c7bcd811a21ec716180a711335e2230811b953f7bf91684",
+    "slides/slide-03.png": "86a4320e50c9e37c95287c0eb7711e3e28e181337003b3edc44c03bdd6f5db97",
+    "slides/slide-04.png": "9b56b1ef4e2abf196a3462cc60d5841eedce701f84345bbb944d3f9e501c90a5"
+  }
+}
