@@ -21,6 +21,7 @@ const ui = {
 let timeline = null;
 let playlist = [];
 let anchors = [];
+const guidedAnchors = new Map(); // private, SRT-matched positions per slide
 let calibration = false;
 let solo = false;
 let renderedCue = -3;
@@ -396,8 +397,10 @@ function safeStoredAnchors() {
 
 function refreshAnchorControls() {
   const count = timeline ? safeStoredAnchors().length : 0;
+  const baseCount = timeline ? (guidedAnchors.get(timeline.slide) || timeline.anchors).length : 0;
   ui.anchorCount.textContent = count + (count === 1 ? " punto propio" : " puntos propios") +
-    (timeline ? " · Lámina " + String(timeline.slide).padStart(2, "0") : "");
+    (timeline ? " · base " + baseCount + " puntos · Lámina " +
+      String(timeline.slide).padStart(2,"0") : "");
   ui.import.disabled = !timeline;
   ui.export.disabled = !timeline;
   ui.undoAnchor.disabled = !count;
@@ -413,7 +416,7 @@ function saveAnchors(updated) {
     setMessage("No se pudo guardar la calibración en este navegador.", true);
     return false;
   }
-  anchors = timeline.anchors.concat(updated).sort((a, b) => a.at - b.at);
+  anchors = (guidedAnchors.get(timeline.slide) || timeline.anchors).concat(updated).sort((a, b) => a.at - b.at);
   refreshAnchorControls();
   laserForTime(currentAbsolute());
   return true;
@@ -434,8 +437,8 @@ function undoLastAnchor() {
 
 function resetCustomAnchors() {
   if (!timeline || !safeStoredAnchors().length) return;
-  if (!window.confirm("¿Restablecer los puntos originales de esta lámina? Se borrarán sus ajustes locales.")) return;
-  if (saveAnchors([])) setMessage("Restaurados los puntos originales de esta lámina.");
+  if (!window.confirm("¿Volver a la calibración base de esta lámina? Se borrarán sus ajustes locales.")) return;
+  if (saveAnchors([])) setMessage("Restaurada la calibración base de esta lámina.");
 }
 
 async function importCustomAnchors(event) {
@@ -522,7 +525,7 @@ function activateSlide(number, {seek = true} = {}) {
     ui.calibrate.textContent = "Calibrar láser";
   }
   timeline = selected;
-  anchors = selected.anchors.concat(safeStoredAnchors()).sort((a,b) => a.at-b.at);
+  anchors = (guidedAnchors.get(selected.slide) || selected.anchors).concat(safeStoredAnchors()).sort((a,b) => a.at-b.at);
   refreshAnchorControls();
   // The original filename in the PRIVATE timings JSON is never served from Pages.
   // Reject stale image requests if the user changes slides while downloading.
@@ -569,6 +572,22 @@ async function loadPlaylist() {
     throw new Error("La lista de las 11 láminas no es válida.");
   }
   playlist = data.slides;
+  // The 17 original media objects remain unmodified. Semantic cue positions
+  // are stored in member-only slide_guides, with original anchors as fallback.
+  const privateRows = await window.KaraokePrivate.laserAnchors();
+  for (const row of privateRows) {
+    const source = playlist.find(item => item.slide === Number(row.slide));
+    if (!source || !Array.isArray(row.laser_anchors) ||
+        row.laser_anchors.length < 2 || row.laser_anchors.length > 24) continue;
+    const safe = row.laser_anchors.every(a =>
+      a && Number.isFinite(a.at) && a.at >= source.start && a.at < source.end &&
+      Number.isFinite(a.x) && a.x >= 0 && a.x <= 1 &&
+      Number.isFinite(a.y) && a.y >= 0 && a.y <= 1 &&
+      typeof a.label === "string" && a.label.length <= 100);
+    if (safe) guidedAnchors.set(source.slide,
+      row.laser_anchors.map(a=>({at:a.at,x:a.x,y:a.y,label:a.label}))
+        .sort((a,b)=>a.at-b.at));
+  }
   // Keep jury images within the private bucket, and fail visibly if missing.
   await window.KaraokePrivate.loadJury();
   const videoUrl = await window.KaraokePrivate.media("guided/narration.mp4");
