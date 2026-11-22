@@ -58,6 +58,10 @@ function makeQuiz(){
  }
  fill('teoria',expectedTheory,true);
  fill('aplicacion',expectedApplied,true);
+ // If there are fewer distinct slide groups than quiz questions, preserve
+ // the theoretical/applied ratio before filling the remaining slots.
+ fill('teoria',expectedTheory-deck.filter(q=>q.track==='teoria').length,false);
+ fill('aplicacion',expectedApplied-deck.filter(q=>q.track==='aplicacion').length,false);
  fill(null,n-deck.length,true);
  fill(null,n-deck.length,false);
  const past=load(deckKey,[]);past.unshift(deck.map(x=>x.id));
