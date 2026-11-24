@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <title>PAOS · Academia de presentación</title>
+  <link rel="stylesheet" href="./style.css">
+  <link rel="stylesheet" href="./guided.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="Navegación de la academia">
+      <div class="brand"><div class="brand-mark">P</div><div><strong>Presentation Academy</strong><small>OS · RPOS 0.1.1</small></div></div>
+      <div class="sidebar-label">ENTRENAMIENTO</div>
+      <nav id="navigation" class="navigation" aria-label="Modalidades">
+        <button data-mode="quiz" class="nav-link active"><span>◎</span> Estudiar</button>
+        <button data-mode="resources" class="nav-link"><span>▣</span> Por recurso</button>
+        <button data-mode="exam" class="nav-link"><span>◇</span> Preguntas del público</button>
+        <button data-mode="mock" class="nav-link"><span>◷</span> Simulacro</button>
+        <button data-mode="guided" class="nav-link"><span>▷</span> Ensayo guiado</button>
+        <button data-mode="progress" class="nav-link"><span>▥</span> Mi progreso</button>
+      </nav>
+      <div class="sidebar-foot"><strong>PRIVACIDAD</strong><p>Este piloto utiliza únicamente contenido ficticio. No contiene materiales de ninguna tesis.</p><span class="pill">Modo demostración</span></div>
+    </aside>
+    <div class="workspace">
+      <header class="topbar"><div><p class="eyebrow">ACADEMIA CONFIGURABLE</p><h1 id="academy-title">Entrenamiento de presentaciones</h1><p id="academy-subtitle" class="muted"></p></div><div class="topbar-side"><span class="status-dot"></span> Demo sin cuentas</div></header>
+      <main id="main" class="main" tabindex="-1" aria-live="polite"><p>Cargando academia…</p></main>
+      <footer class="footer">Presentation Academy OS · Piloto privado reutilizable · No califica respuestas orales automáticamente</footer>
+    </div>
+  </div>
+  <script src="./config.js"></script>
+  <script src="./content.js"></script>
+  <script src="./guided-data.js"></script>
+  <script src="./guided.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>

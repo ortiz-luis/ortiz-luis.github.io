@@ -1,0 +1,7 @@
+1
+00:00:00,100 --> 00:00:06,288
+Je voudrais expliquer les résultats de cette expérience, avec les détails des mesures et les limites pour notre interprétation.
+
+2
+00:00:06,238 --> 00:00:11,771
+Nous allons discuter cette figure, puis montrer pourquoi les valeurs doivent être comparées dans le même contexte.
